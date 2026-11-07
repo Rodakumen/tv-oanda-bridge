@@ -44,9 +44,10 @@ TradingView sends a POST to `/webhook/tradingview` with a JSON body:
 
 ## Setup
 
-```bash
-pip install -r requirements.txt   # or: pip install .
-cp .env.example .env              # then fill in real values
+```powershell
+pip install ".[dev]"
+copy .env.example .env      # Windows (Mac/Linux: cp .env.example .env)
+# then open .env and fill in real values
 uvicorn main:app --reload
 ```
 
