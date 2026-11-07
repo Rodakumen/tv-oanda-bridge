@@ -1,0 +1,17 @@
+# secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# tests / tooling
+.pytest_cache/
+
+# local database
+*.db
+
+# IDE
+.idea/
