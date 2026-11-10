@@ -6,6 +6,7 @@ from pydantic import SecretStr
 class Settings(BaseSettings):
 
     WEBHOOK_PASSPHRASE: SecretStr
+    DATABASE_URL: str = "sqlite:///./bridge.db"
     OANDA_TOKEN: SecretStr
     ACCOUNT_ID: str
 

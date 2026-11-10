@@ -15,3 +15,7 @@ venv/
 
 # IDE
 .idea/
+
+# build artifacts
+build/
+*.egg-info/
