@@ -7,7 +7,7 @@ and (in later steps) places orders at Oanda safely: no duplicate orders, no sile
 
 - [x] Webhook endpoint with schema validation and constant-time passphrase check
 - [x] Automated tests (pytest)
-- [ ] Alert log with idempotency (unique `alert_id`)
+- [x] Alert log with idempotency (unique `alert_id`)
 - [ ] Oanda client (practice account) and risk rules
 - [ ] Background execution, retries, failure notifications
 - [ ] Docker + deployment
@@ -38,7 +38,8 @@ TradingView sends a POST to `/webhook/tradingview` with a JSON body:
 
 | Status | Meaning |
 |---|---|
-| 200 | Alert accepted |
+| 200 `{"status": "received"}` | New alert, logged |
+| 200 `{"status": "duplicate"}` | Same `alert_id` already seen, nothing done |
 | 401 | Wrong passphrase |
 | 422 | Invalid body (bad action, size ≤ 0, missing field) |
 
@@ -72,3 +73,11 @@ pytest -v
   It is never logged or returned.
 - **Strict action values.** A typo is rejected loudly (422) instead of being
   silently "fixed".
+- **Duplicates return 200.** A duplicate is not a failure: the alert was already
+  handled. An error code would make retrying senders resend forever, so the body says
+  `{"status": "duplicate"}` and the log shows what happened.
+- **Uniqueness is enforced by the database.** `alert_id` has a unique constraint and
+  the service inserts first and catches the error, instead of checking first. Two
+  identical alerts arriving at the same moment can't both succeed.
+- **The passphrase is never stored.** It is checked in the router and not passed to
+  the service, repository or log.
