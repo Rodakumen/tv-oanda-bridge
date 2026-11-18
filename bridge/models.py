@@ -12,6 +12,7 @@ class AlertStatus(str, enum.Enum):
     RECEIVED = "received"
     EXECUTED = "executed"
     FAILED   = "failed"
+    REJECTED = "rejected"
 
 
 class AlertLog(Base):

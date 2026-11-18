@@ -2,6 +2,7 @@
 import pytest
 
 from config import settings
+from bridge.schemas import AlertPayload
 
 PASSPHRASE = settings.WEBHOOK_PASSPHRASE.get_secret_value()
 
@@ -38,6 +39,7 @@ def test_missing_alert_id_returns_422(client):
     ("action", "banana"),
     ("size", 0),
     ("size", -5),
+    ("symbol","   ")
 ])
 def test_invalid_fields_return_422(client, field, value):
     payload = valid_payload()
@@ -62,3 +64,8 @@ def test_same_alert_twice_returns_received_then_duplicate(client):
     assert first.json() == {"status": "received"}
     assert second.status_code == 200, second.text   # duplicate is not an error
     assert second.json() == {"status": "duplicate"}
+
+def test_symbol_is_normalized():
+    payload = valid_payload()
+    payload["symbol"] = " eur_usd "
+    assert AlertPayload(**payload).symbol == "EUR_USD"
