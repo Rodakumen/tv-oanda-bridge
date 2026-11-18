@@ -13,3 +13,12 @@ def side_to_close(position: dict) -> str | None:
         return "shortUnits"
 
     return None
+
+def to_units(action: str, size: int) -> int:
+    """buy -> +size, sell -> -size. Raise ValueError for anything else."""
+    if action == "buy":
+        return size
+    if action == "sell":
+        return -size
+    
+    raise ValueError(f"Cannot convert action {action!r} to units")
