@@ -1,20 +1,11 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-
-from bridge.database import Base
 from bridge import models  # noqa: F401  (registers the table with Base)
 from bridge.repository import AlertRepository
 from sqlalchemy import select
 from bridge.models import AlertLog, AlertStatus
 
 
-@pytest.fixture
-def db():
-    engine = create_engine("sqlite://")      # in-memory, thrown away after each test
-    Base.metadata.create_all(engine)
-    with Session(engine) as session:
-        yield session
+
 
 
 def test_first_insert_returns_true(db):

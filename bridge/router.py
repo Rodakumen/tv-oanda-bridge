@@ -17,7 +17,7 @@ def get_repository(db: Session = Depends(get_db)) -> AlertRepository:
 
 
 def get_service(repo: AlertRepository = Depends(get_repository)) -> AlertService:
-    return AlertService(repo)
+    return AlertService(repo,settings.ALLOWED_SYMBOLS,settings.MAX_ORDER_SIZE,settings.TRADING_ENABLED)
 
 
 @router.post("/webhook/tradingview")
