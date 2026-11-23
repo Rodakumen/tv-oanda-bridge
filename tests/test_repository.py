@@ -39,3 +39,22 @@ def test_new_alert_has_default_status_and_timestamp(db):
     assert entry is not None
     assert entry.status == AlertStatus.RECEIVED
     assert entry.created_at is not None
+
+def test_status_update_works(db):
+    repo = AlertRepository(db)
+    repo.record_alert("a1", "buy", "EUR_USD", 1000)
+
+    repo.update_status("a1", AlertStatus.REJECTED, "size_exceeds_max")
+
+    entry = repo.get_by_alert_id("a1")
+
+    #reason = db.scalar(select(AlertLog.reason).where(AlertLog.alert_id == "a1"))
+    #assert reason == "size_exceeds_max"
+    assert entry.status == AlertStatus.REJECTED
+    assert entry.reason == "size_exceeds_max"
+
+def test_update_unknown_alert_raises(db):
+    repo = AlertRepository(db)
+    with pytest.raises(ValueError):
+        repo.update_status("missing", AlertStatus.FAILED)
+

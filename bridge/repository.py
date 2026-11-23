@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from bridge.models import AlertLog
+from bridge.models import AlertLog, AlertStatus
 
 
 class AlertRepository:
@@ -24,3 +24,13 @@ class AlertRepository:
     def get_by_alert_id(self, alert_id: str) -> AlertLog | None:
         stmt = select(AlertLog).where(AlertLog.alert_id == alert_id)
         return self.db.scalars(stmt).first()
+
+    def update_status(self, alert_id: str, status: AlertStatus, reason: str | None = None) -> None:
+        row = self.get_by_alert_id(alert_id)
+
+        if row is None:
+            raise ValueError(f"Unknown alert_id: {alert_id!r}")
+
+        row.status = status
+        row.reason = reason
+        self.db.commit()
