@@ -1,4 +1,7 @@
 # oanda/helpers.py (or inside oanda_client.py)
+
+FILL_KEYS = ("orderFillTransaction", "longOrderFillTransaction", "shortOrderFillTransaction")
+
 def side_to_close(position: dict) -> str | None:
     """Return "longUnits", "shortUnits", or None if nothing is open."""
     long_units = float(position["long"]["units"])
@@ -22,3 +25,7 @@ def to_units(action: str, size: int) -> int:
         return -size
     
     raise ValueError(f"Cannot convert action {action!r} to units")
+
+def was_filled(result: dict) -> bool:
+    """True if Oanda's response contains a fill."""
+    return any(key in result for key in FILL_KEYS)
